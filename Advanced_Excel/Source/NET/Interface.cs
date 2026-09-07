@@ -1224,6 +1224,15 @@ namespace OutSystems.NssAdvanced_Excel {
 		/// <param name="ssZoomScale">Zoom percentage, from 10 to 400</param>
 		void MssWorksheet_SetView(object ssWorksheet, bool ssShowGridLines, bool ssShowHeaders, int ssZoomScale);
 
+		/// <summary>
+		/// Places an image, such as a company logo, in the worksheet&apos;s page header or footer. The image appears when the sheet is printed or in print preview. The image occupies the chosen section, so setting text in that same section with Worksheet_SetHeader or Worksheet_SetFooter afterwards replaces it — use different sections for text and image.
+		/// </summary>
+		/// <param name="ssWorksheet">The worksheet to work with</param>
+		/// <param name="ssImage">The image content (PNG or JPEG). PNG transparency is preserved</param>
+		/// <param name="ssInFooter">Places the image in the page footer instead of the header</param>
+		/// <param name="ssAlignment">Section of the header or footer to place the image in: Left, Center, or Right</param>
+		void MssWorksheet_AddHeaderFooterImage(object ssWorksheet, byte[] ssImage, bool ssInFooter, string ssAlignment);
+
 	} // IssAdvanced_Excel
 
 } // OutSystems.NssAdvanced_Excel
