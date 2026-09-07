@@ -20,6 +20,55 @@ namespace OutSystems.NssAdvanced_Excel
     {
 
 		/// <summary>
+		/// Places an image, such as a company logo, in the worksheet&apos;s page header or footer. The image appears when the sheet is printed or in print preview. The image occupies the chosen section, so setting text in that same section with Worksheet_SetHeader or Worksheet_SetFooter afterwards replaces it — use different sections for text and image.
+		/// </summary>
+		/// <param name="ssWorksheet">The worksheet to work with</param>
+		/// <param name="ssImage">The image content (PNG or JPEG). PNG transparency is preserved</param>
+		/// <param name="ssInFooter">Places the image in the page footer instead of the header</param>
+		/// <param name="ssAlignment">Section of the header or footer to place the image in: Left, Center, or Right</param>
+		public void MssWorksheet_AddHeaderFooterImage(object ssWorksheet, byte[] ssImage, bool ssInFooter, string ssAlignment) {
+			ExcelWorksheet ws = AsWorksheet(ssWorksheet);
+
+			if (ssImage == null || ssImage.Length == 0)
+			{
+				throw new ArgumentException("Image is required.", nameof(ssImage));
+			}
+
+			PictureAlignment alignment;
+			switch ((ssAlignment ?? "").Trim().ToLowerInvariant())
+			{
+				case "":
+				case "left":
+					alignment = PictureAlignment.Left;
+					break;
+				case "center":
+				case "centered":
+					alignment = PictureAlignment.Centered;
+					break;
+				case "right":
+					alignment = PictureAlignment.Right;
+					break;
+				default:
+					throw new ArgumentException("Invalid Alignment '" + ssAlignment + "'. Use Left, Center, or Right.", nameof(ssAlignment));
+			}
+
+			ExcelHeaderFooterText target = ssInFooter ? ws.HeaderFooter.OddFooter : ws.HeaderFooter.OddHeader;
+
+			try
+			{
+				using (var ms = new MemoryStream(ssImage))
+				using (var img = System.Drawing.Image.FromStream(ms))
+				{
+					target.InsertPicture(img, alignment);
+				}
+			}
+			catch (ArgumentException ex) when (ex.ParamName == null)
+			{
+				throw new ArgumentException("Image is not a valid picture. Supply PNG or JPEG content.", nameof(ssImage));
+			}
+		} // MssWorksheet_AddHeaderFooterImage
+
+		/// <summary>
 		/// Sets how the worksheet is displayed on screen: gridlines, row and column headers, and zoom.
 		/// </summary>
 		/// <param name="ssWorksheet">The worksheet to work with</param>
